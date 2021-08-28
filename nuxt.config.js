@@ -49,10 +49,6 @@ export default {
     baseURL : 'https://arduinov2.aplicacionesperu.com/api/'
   },
 
-  server: {
-    host: '0.0.0.0', // default: localhost
-  },
-
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
