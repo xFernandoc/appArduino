@@ -151,7 +151,7 @@ export default {
           this.snackbar = true
           this.active = false
           await this.$store.dispatch('getRegisters')
-          this.title = 'Cargando usuarios' 
+          this.title = 'Registro creado' 
         } catch (error) {
           console.log("Error");
         }
