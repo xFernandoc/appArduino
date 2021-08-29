@@ -1,5 +1,8 @@
 <template>
   <div class="button_add">
+    <v-btn class="blue white--text darken-3 mr-2" :disabled='excelLoading' @click="createXLS">
+      <v-icon>mdi-file-excel</v-icon> Generar excel</v-btn
+    >
     <v-btn class="green white--text" :disabled="loadingUsers" @click="openModal"
       ><v-icon class="mr-2">mdi-plus-circle</v-icon> Agregar registro</v-btn
     >
@@ -17,29 +20,31 @@
                 </v-radio-group>
               </v-col>
               <v-col md="6" cols="12">
-                <v-autocomplete
-                  no-data-text="No encontrado"
-                  v-if="selectUser == '2'"
-                  :items="suministros"
-                  placeholder="Seleccione un suministro"
-                  v-model="suministro"
-                  dense
-                  filled
-                  required
-                  :rules="[required('suministro')]"
-                ></v-autocomplete>
-                <v-text-field
-                  autocomplete="new-suministro"
-                  v-model="suministro"
-                  v-else
-                  dense
-                  outlined
-                  placeholder="Ingrese el suministro"
-                  required
-                  :rules="[required('suministro')]"
-                />
+                <template v-if="selectUser == '2'">
+                  <v-autocomplete
+                    v-model="suministro"
+                    no-data-text="No encontrado"
+                    :items="suministros"
+                    placeholder="Seleccione un suministro"
+                    dense
+                    filled
+                    required
+                    :rules="[required('suministro')]"
+                  />
+                </template>
+                <template v-else>
+                  <v-text-field
+                    v-model="suministro"
+                    autocomplete="new-suministro"
+                    dense
+                    outlined
+                    placeholder="Ingrese el suministro"
+                    required
+                    :rules="[required('suministro')]"
+                  />
+                </template>
               </v-col>
-              <v-col md="6" cols='12'>
+              <v-col md="6" cols="12">
                 <label for="">Lectura anterior</label>
                 <v-text-field
                   type="number"
@@ -51,10 +56,10 @@
                   outlined
                   placeholder="Ingrese la lectura"
                   v-model="anterior"
-                  autocomplete='new-lectura'
+                  autocomplete="new-lectura"
                 />
               </v-col>
-              <v-col md="6" cols='12'>
+              <v-col md="6" cols="12">
                 <label for="">Lectura actual</label>
                 <v-text-field
                   type="number"
@@ -66,14 +71,20 @@
                   outlined
                   placeholder="Ingrese la lectura"
                   v-model="actual"
-                  autocomplete='new-lectura'
+                  autocomplete="new-lectura"
                 />
               </v-col>
               <v-col cols="12" class="text-center">
-                <v-btn :disabled='loadingCreated' class="red darken-3 white--text" @click="closeModal"
+                <v-btn
+                  :disabled="loadingCreated"
+                  class="red darken-3 white--text"
+                  @click="closeModal"
                   >Cancelar</v-btn
                 >
-                <v-btn :disabled='loadingCreated' class="green white--text" @click="saveRegister"
+                <v-btn
+                  :disabled="loadingCreated"
+                  class="green white--text"
+                  @click="saveRegister"
                   >Guardar</v-btn
                 >
               </v-col>
@@ -107,6 +118,7 @@ export default {
     anterior: '',
     snackbar: false,
     title: '',
+    excelLoading : false
   }),
   computed: {
     ...mapState({
@@ -139,7 +151,7 @@ export default {
       }
       return (value) => value !== '' || 'Debes ingresar un(a) ' + name + '.'
     },
-     async saveRegister() {
+    async saveRegister() {
       if (this.$refs.form.validate()) {
         const data = {
           suministro: this.suministro,
@@ -147,16 +159,28 @@ export default {
           anterior: parseFloat(this.anterior),
         }
         try {
-           await this.$store.dispatch('sendRegistro', data)
+          await this.$store.dispatch('sendRegistro', data)
           this.snackbar = true
           this.active = false
           await this.$store.dispatch('getRegisters')
-          this.title = 'Registro creado' 
+          this.title = 'Registro creado'
         } catch (error) {
-          console.log("Error");
+          console.log('Error')
         }
       }
     },
+    async createXLS(){
+      this.excelLoading = true
+      try {
+        const dataExcel = await this.$axios.$get('register/createReport')
+        if(dataExcel.excel){
+          window.open(dataExcel.excel,'_top')
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      this.excelLoading = false
+    }
   },
 }
 </script>
