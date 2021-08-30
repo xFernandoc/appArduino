@@ -1,5 +1,6 @@
 <template>
   <div class="button_add">
+    <v-btn class="red darken-2 mr-2 white--text" :disabled='refreshLoading' @click="refrescar"> <v-icon>mdi-refresh</v-icon> Refrescar</v-btn>
     <v-btn class="blue white--text darken-3 mr-2" :disabled='excelLoading' @click="createXLS">
       <v-icon>mdi-file-excel</v-icon> Generar excel</v-btn
     >
@@ -118,13 +119,17 @@ export default {
     anterior: '',
     snackbar: false,
     title: '',
-    excelLoading : false
+    excelLoading : false,
+    refreshLoading : false
   }),
   computed: {
     ...mapState({
       loadingUsers: (state) => state.loadingUsers,
       users: (state) => state.users,
       loadingCreated: (state) => state.loadingCreateRegistro,
+      suministroStore : (state) => state.suministroSearch,
+      dateInit : (state) => state.dateInit,
+      dateFinish : (state) => state.dateFinish,
     }),
     suministros() {
       return this.users.map((user) => user.suministro)
@@ -169,10 +174,21 @@ export default {
         }
       }
     },
+    async refrescar(){
+      this.refreshLoading = true
+      try {
+        await this.$store.dispatch('getRegisters')
+        this.snackbar = true
+        this.title = 'Registros actualizados'
+      } catch (error) {
+        console.log(error);
+      }
+      this.refreshLoading = false
+    },
     async createXLS(){
       this.excelLoading = true
       try {
-        const dataExcel = await this.$axios.$get('register/createReport')
+        const dataExcel = await this.$axios.$get(`register/createReport?suministro=${this.suministroStore}&dateInit=${this.dateInit}&dateFinish=${this.dateFinish}`)
         if(dataExcel.excel){
           window.open(dataExcel.excel,'_top')
         }
@@ -195,6 +211,13 @@ button {
   margin: 20px 0px;
   display: flex;
   justify-content: flex-end;
+  @media(max-width : 600px){
+    flex-direction: column;
+    & button{
+      width: 100%;
+      margin: 4px 0px;
+    }
+  }
 }
 .modal_default {
   background: white;

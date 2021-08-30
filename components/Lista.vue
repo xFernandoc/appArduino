@@ -10,6 +10,10 @@
       <template v-slot:item.fecha="{ item }">
         {{getFecha(item.fecha)}}
       </template>
+      <template v-slot:item.hora="{ item }">
+        {{getHora(item.fecha)}}
+      </template>
+      
     </v-data-table>
   </div>
 </template>
@@ -27,12 +31,13 @@ export default {
     headers() {
       return [
         {
-          text: 'N° de registro',
+          text: 'N° de suministro',
           align: 'start',
           value: 'suministro',
           sortable: false,
         },
         { text: 'Fecha', align: 'start', value: 'fecha', sortable: false },
+        { text: 'Hora', align: 'start', value: 'hora', sortable: false },
         {
           text: 'Lectura anterior',
           align: 'start',
@@ -49,13 +54,25 @@ export default {
     },
   },
   methods: {
-    getFecha(val = null) {
+    getHora(val){
       if (val) {
         try {
           return new Intl.DateTimeFormat(undefined, {
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
+            hour12: true,
+          }).format(new Date(val))
+        } catch (error) {
+          return '-'
+        }
+      }
+      return '-'
+    },
+    getFecha(val = null) {
+      if (val) {
+        try {
+          return new Intl.DateTimeFormat(undefined, {
             year: 'numeric',
             month: '2-digit',
             day: 'numeric',

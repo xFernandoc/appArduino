@@ -6,7 +6,10 @@ export const state = () =>({
   dataList : [],
   users : [],
   loadingUsers : false,
-  loadingCreateRegistro : false
+  loadingCreateRegistro : false,
+  suministroSearch : '',
+  dateInit : '',
+  dateFinish : ''
 })
 
 export const mutations = {
@@ -27,14 +30,32 @@ export const mutations = {
   },
   SET_LOADER_CREATED(state,data){
     state.loadingCreateRegistro = data
-  }
+  },
+  SET_SUMINISTRO_SEARCH(state,data){
+    state.suministroSearch = data
+  },
+  SET_DATE_INIT_SEARCH(state,data){
+    state.dateInit = data
+  },
+  SET_DATE_FINISH_SEARCH(state,data){
+    state.dateFinish = data
+  },
 }
 
 
 export const actions = {
-  async getRegisters({commit}){
+  setSuministro({commit},data){
+    commit('SET_SUMINISTRO_SEARCH',data)
+  },
+  setFechaInit({commit},data){
+    commit('SET_DATE_INIT_SEARCH',data)
+  },
+  setFechaFinish({commit},data){
+    commit('SET_DATE_FINISH_SEARCH',data)
+  },
+  async getRegisters({commit,state}){
     commit('SET_LOADER',true)
-    const response = await getData(this.$axios,'register','GET')
+    const response = await getData(this.$axios,`register?suministro=${state.suministroSearch}&initDate=${state.dateInit}&finishDate=${state.dateFinish}`,'GET')
     const dataResponse = response.data
     if(dataResponse.registros){
       commit('SET_DATA',dataResponse.registros)

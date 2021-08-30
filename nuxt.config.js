@@ -50,6 +50,7 @@ export default {
   },
 
 
+
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
@@ -66,7 +67,8 @@ export default {
           success: colors.green.accent3
         }
       }
-    }
+    },
+    optionsPath: './vuetify.options.js',
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
