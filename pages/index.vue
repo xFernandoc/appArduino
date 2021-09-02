@@ -17,6 +17,7 @@ export default {
     AddRegistro,
     Filtro
   },
+  auth : true,
   async mounted(){
     try {
       await this.$store.dispatch('getRegisters')

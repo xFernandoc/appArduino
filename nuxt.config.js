@@ -42,6 +42,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -49,6 +50,9 @@ export default {
     baseURL : 'https://arduinov2.aplicacionesperu.com/api/'
   },
 
+  router: {
+    middleware: ['auth']
+  },
 
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -69,6 +73,28 @@ export default {
       }
     },
     optionsPath: './vuetify.options.js',
+  },
+
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: '/users/login',
+            method: 'post',
+            propertyName: 'token',
+          },
+          logout: false,
+          user: { url: '/users/me', method: 'get', propertyName: 'user' },
+        },
+      },
+    },
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      callback: '/callback',
+      home: '/',
+    },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

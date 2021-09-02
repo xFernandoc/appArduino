@@ -219,13 +219,7 @@ button {
     }
   }
 }
-.modal_default {
-  background: white;
-  padding: 10px;
-  border-radius: 0.25rem;
-  position: relative;
-  overflow: hidden;
-}
+
 .frmRegistro label {
   font-weight: bold;
   color: darkblue;
